@@ -5,6 +5,7 @@ from braket.devices import LocalSimulator
 from braket.aws import AwsDevice
 
 # ————— Lesson Builders —————
+
 def build_measure():
     """def build():
     circuit = Circuit()
@@ -14,6 +15,7 @@ def build_measure():
     circuit = Circuit()
     circuit.measure(0)
     return circuit
+
 
 def build_hadamard():
     """def build():
@@ -27,6 +29,7 @@ def build_hadamard():
     circuit.measure(0)
     return circuit
 
+
 def build_pauli_x():
     """def build():
     circuit = Circuit()
@@ -38,6 +41,7 @@ def build_pauli_x():
     circuit.x(0)
     circuit.measure(0)
     return circuit
+
 
 def build_cnot():
     """def build():
@@ -57,7 +61,7 @@ def build_cnot():
 LESSONS = {
     "Measurement Gate (M)": {
         "builder": build_measure,
-        "latex": r"M = |0\rangle\langle0| \;+\; |1\rangle\langle1|",
+        "latex": r"M = |0\rangle\langle0| + |1\rangle\langle1|",
         "description": "Measure qubit 0: collapse its state to 0 or 1 and record the result."
     },
     "Hadamard Gate (H)": {
@@ -78,26 +82,40 @@ LESSONS = {
 }
 
 # ————— Main App —————
-# Landing vs. Tutorial State
 if "started" not in st.session_state:
     st.session_state.started = False
 
 # Landing Page
 if not st.session_state.started:
-    st.title("Welcome to QubitQuest")
+    st.title("Welcome to QubitQuest ✨")
+
     st.markdown(
         """
-        **Enter the quantum realm where real particles, real math,  
-        and real code power your quest for fundamental understanding.**
+        🔭 **Enter the quantum realm where real particles, real math, and real code power your quest for fundamental understanding.**
 
         ---
 
-        ## Why “Fundamental” Matters  
-        QubitQuest uses *trapped‑ion qubits* to let you directly harness the actual particles and interactions at the heart of quantum theory:
+        🌟 **What is QubitQuest?**
+        QubitQuest is an interactive learning platform that guides you through a hands‑on quantum computing journey. Each lesson integrates theory, code, and hardware.
 
-        - **Single Atomic Ions**: Each qubit is one ¹⁷¹Yb⁺ ion—no emergent circuits, just fundamental particles.  
-        - **Laser‑Driven Transitions**: Manipulate |0⟩ ↔ |1⟩ via focused laser beams—textbook quantum mechanics in action.  
-        - **Direct Quantum Interactions**: Entanglement and gates from Coulomb coupling & photon exchange, not engineered Josephson junctions.
+        - 📝 **Theory:** Dive into the mathematics behind quantum gates, state vectors, and measurement postulates.
+        - 💻 **Code:** Write Braket Python snippets to build, manipulate, and visualize real quantum circuits.
+        - ⚛️ **Hardware:** Run your circuits on IonQ’s trapped‑ion systems or a local simulator for instant feedback.
+
+        ---
+
+        📈 **Your Learning Path**
+        1️⃣ Start with single‑qubit basics (superposition, Hadamard, Pauli gates).
+        2️⃣ Progress to entanglement and multi‑qubit states (Bell, GHZ, W).
+        3️⃣ Dive into core algorithms: Grover’s search, Quantum Fourier Transform, Phase Estimation, and more.
+        💻 Practice by writing and running code directly on real IonQ hardware, reinforcing quantum mechanics from the ground up.
+
+        ---
+
+        🚀 **Why “Fundamental” Matters**
+        - 🧲 **Atomic‑scale qubits:** Each qubit is a ¹⁷¹Yb⁺ ion — no superconducting abstractions; you work with real particles.
+        - 💡 **Laser‑driven transitions:** Directly manipulate electronic states via focused laser pulses — textbook quantum mechanics in action.
+        - 🔗 **Natural interactions:** Generate entanglement through Coulomb coupling and photon exchange, bypassing synthetic circuit complexity.
 
         ---
         """
@@ -152,15 +170,10 @@ else:
             exec(user_code, exec_env)
             circuit = exec_env["build"]()
 
-            # ASCII‑style circuit preview
             st.text(str(circuit))
-
-            # Run on chosen backend
             device = LocalSimulator() if backend.startswith("🚀") else AwsDevice("arn:aws:braket:us-west-2::device/qpu/ionq/H1")
             task   = device.run(circuit, shots=shots)
             counts = task.result().measurement_counts
-
-            # Display results
             st.success(f"Results ({backend.split()[1]}):")
             st.bar_chart(counts)
         except Exception as e:
